@@ -1,6 +1,18 @@
 #!/bin/bash
-# Start the agentic RAG server (R5 Hijack RD-0503 testing)
-# Requires: pip install fastapi uvicorn chromadb httpx pydantic
-# Requires: Ollama running locally
+# Start the agentic RAG target (R5 Hijack RD-0503 testing)
+# Requires: Ollama running locally, and the lab dependencies installed.
 
-OLLAMA_MODEL=${OLLAMA_MODEL:-"qwen3:0.6b"} python targets/rag_server_agentic.py
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PYTHON_BIN="${PYTHON_BIN:-}"
+
+if [[ -z "$PYTHON_BIN" ]]; then
+    if [[ -x "$SCRIPT_DIR/.venv/bin/python" ]]; then
+        PYTHON_BIN="$SCRIPT_DIR/.venv/bin/python"
+    else
+        PYTHON_BIN="python3"
+    fi
+fi
+
+OLLAMA_MODEL="${OLLAMA_MODEL:-qwen3:0.6b}" exec "$PYTHON_BIN" "$SCRIPT_DIR/targets/rag_server_agentic.py"
